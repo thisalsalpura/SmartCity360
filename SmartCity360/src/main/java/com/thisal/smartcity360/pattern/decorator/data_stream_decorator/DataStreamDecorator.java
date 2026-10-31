@@ -11,17 +11,17 @@ public abstract class DataStreamDecorator implements DataStream {
     }
 
     @Override
-    public byte[] send(byte[] payload) {
+    public final byte[] send(byte[] payload) {
         return wrapped.send(transformOutgoing(payload));
     }
 
     @Override
-    public byte[] receive(byte[] frame) {
+    public final byte[] receive(byte[] frame) {
         return transformIncoming(wrapped.receive(frame));
     }
 
     @Override
-    public String describe() {
+    public final String describe() {
         return layerName() + " -> " + wrapped.describe();
     }
 

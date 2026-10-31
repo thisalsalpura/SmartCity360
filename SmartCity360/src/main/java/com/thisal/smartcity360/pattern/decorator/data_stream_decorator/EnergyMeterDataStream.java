@@ -15,15 +15,6 @@ public class EnergyMeterDataStream implements DataStream {
         this.meterId = meterId;
     }
 
-    public static void requiredValidFrame(byte[] data, String name) {
-        Objects.requireNonNull(data, name + " must not be Null!");
-        if (data.length == 0) {
-            throw new IllegalArgumentException(name + " must not be Empty!");
-        } else if (data.length > EnergyMeterDataStream.MAX_FRAME_BYTES) {
-            throw new IllegalArgumentException(name + " must not exceed " + EnergyMeterDataStream.MAX_FRAME_BYTES + " Bytes!");
-        }
-    }
-
     @Override
     public byte[] send(byte[] payload) {
         requiredValidFrame(payload, "Payload");
@@ -39,6 +30,15 @@ public class EnergyMeterDataStream implements DataStream {
     @Override
     public String describe() {
         return "EnergyMeterDataStream: MeterId=" + this.meterId;
+    }
+
+    private static void requiredValidFrame(byte[] data, String name) {
+        Objects.requireNonNull(data, name + " must not be Null!");
+        if (data.length == 0) {
+            throw new IllegalArgumentException(name + " must not be Empty!");
+        } else if (data.length > EnergyMeterDataStream.MAX_FRAME_BYTES) {
+            throw new IllegalArgumentException(name + " must not exceed " + EnergyMeterDataStream.MAX_FRAME_BYTES + " Bytes!");
+        }
     }
 
 }
