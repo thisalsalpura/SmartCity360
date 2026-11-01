@@ -1,5 +1,8 @@
 package com.thisal.smartcity360.pattern.decorator.data_stream_decorator;
 
+import com.thisal.smartcity360.enums.StreamLayer;
+import com.thisal.smartcity360.exception.StreamSecurityException;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
@@ -38,18 +41,27 @@ public class EncryptionDecorator extends DataStreamDecorator {
             System.arraycopy(encrypted, 0, frame, EncryptionDecorator.IV_BYTES, encrypted.length);
             return frame;
         } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
+            throw new StreamSecurityException("Encryption Failed!", e);
         }
     }
 
     @Override
     protected byte[] transformIncoming(byte[] data) {
-        return new byte[0];
+        if (data.length < EncryptionDecorator.IV_BYTES + EncryptionDecorator.TAG_BYTES) {
+            throw new StreamSecurityException("Decryption Failed! Frame is too short to contain IV and Tag.");
+        }
+        try {
+            Cipher cipher = Cipher.getInstance(EncryptionDecorator.TRANSFORMATION);
+            cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(EncryptionDecorator.TAG_BYTES * 8, data, 0, EncryptionDecorator.IV_BYTES));
+            return cipher.doFinal(data, EncryptionDecorator.IV_BYTES, data.length - EncryptionDecorator.IV_BYTES);
+        } catch (GeneralSecurityException e) {
+            throw new StreamSecurityException("Decryption Failed! Wrong key or frame was Altered.", e);
+        }
     }
 
     @Override
     protected String layerName() {
-        return "";
+        return StreamLayer.ENCRYPTION.getDisplayName();
     }
 
 }
