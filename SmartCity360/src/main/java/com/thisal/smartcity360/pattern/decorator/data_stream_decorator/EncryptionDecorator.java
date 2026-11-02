@@ -24,7 +24,7 @@ public class EncryptionDecorator extends DataStreamDecorator {
 
     public EncryptionDecorator(DataStream wrapped, SecretKey key) {
         super(wrapped);
-        this.key = Objects.requireNonNull(key, "Encryption key must not be Null!");
+        this.key = Objects.requireNonNull(key, "Encryption Key must not be Null!");
     }
 
     @Override
@@ -55,7 +55,7 @@ public class EncryptionDecorator extends DataStreamDecorator {
             cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(EncryptionDecorator.TAG_BYTES * 8, data, 0, EncryptionDecorator.IV_BYTES));
             return cipher.doFinal(data, EncryptionDecorator.IV_BYTES, data.length - EncryptionDecorator.IV_BYTES);
         } catch (GeneralSecurityException e) {
-            throw new StreamSecurityException("Decryption Failed! Wrong key or frame was Altered.", e);
+            throw new StreamSecurityException("Decryption Failed! Wrong Key or Frame was Altered.", e);
         }
     }
 

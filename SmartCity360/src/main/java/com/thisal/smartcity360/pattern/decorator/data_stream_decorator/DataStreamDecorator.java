@@ -7,7 +7,7 @@ public abstract class DataStreamDecorator implements DataStream {
     protected final DataStream wrapped;
 
     protected DataStreamDecorator(DataStream wrapped) {
-        this.wrapped = Objects.requireNonNull(wrapped, "Wrapped data stream cannot be Null!");
+        this.wrapped = Objects.requireNonNull(wrapped, "Wrapped Data Stream cannot be Null!");
     }
 
     @Override

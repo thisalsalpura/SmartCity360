@@ -20,7 +20,7 @@ public class AuthenticationDecorator extends DataStreamDecorator {
 
     public AuthenticationDecorator(DataStream wrapped, SecretKey key) {
         super(wrapped);
-        this.key = Objects.requireNonNull(key, "Authentication key must not be Null!");
+        this.key = Objects.requireNonNull(key, "Authentication Key must not be Null!");
     }
 
     @Override
@@ -41,7 +41,7 @@ public class AuthenticationDecorator extends DataStreamDecorator {
         byte[] body = Arrays.copyOfRange(data, 0, bodyLength);
         byte[] receivedTag = Arrays.copyOfRange(data, bodyLength, data.length);
         if (!MessageDigest.isEqual(receivedTag, sign(body))) {
-            throw new StreamSecurityException("Authentication Failed! Wrong key or frame was Altered.");
+            throw new StreamSecurityException("Authentication Failed! Wrong Key or Frame was Altered.");
         }
         return body;
     }
