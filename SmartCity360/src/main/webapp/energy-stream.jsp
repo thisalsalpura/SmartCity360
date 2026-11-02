@@ -264,9 +264,9 @@
     function showResult(report) {
         var badge = el('outcome');
         var labels = {
-            DELIVERED_INTACT: ['Delivered intact', 'ok'],
-            TAMPERING_REJECTED: ['Tampering rejected', 'rejected'],
-            TAMPERING_UNDETECTED: ['Tampering undetected', 'undetected']
+            DELIVERED_INTACT: ['Delivered Intact', 'ok'],
+            TAMPERING_REJECTED: ['Tampering Rejected', 'rejected'],
+            TAMPERING_UNDETECTED: ['Tampering Undetected', 'undetected']
         };
         var info = labels[report.outcome];
         badge.textContent = info[0];
