@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-<h1>SmartCity360 | Smart City Management System | Index</h1>
+<h1>SmartCity360 | Smart City Management System</h1>
 <ul>
     <li><a href="${pageContext.request.contextPath}/energy-stream.jsp">Part A &ndash; Energy Meter Data Stream
         (Decorator)</a></li>
