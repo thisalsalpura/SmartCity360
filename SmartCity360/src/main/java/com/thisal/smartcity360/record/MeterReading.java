@@ -3,7 +3,10 @@ package com.thisal.smartcity360.record;
 import java.time.Instant;
 import java.util.Objects;
 
-public record MeterReading(Instant timestamp, double kilowattHours) {
+public record MeterReading(
+        Instant timestamp,
+        double kilowattHours
+) {
 
     public MeterReading {
         Objects.requireNonNull(timestamp, "Timestamp must not be Null!");
