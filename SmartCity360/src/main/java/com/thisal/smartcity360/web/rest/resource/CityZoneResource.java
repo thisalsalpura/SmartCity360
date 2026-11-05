@@ -63,7 +63,9 @@ public class CityZoneResource {
     public Response add(@NotNull @Valid ZoneCreateRequest request) {
         assert service != null;
         ZoneView created = service.addZone(request.getParentId(), request.getLevel(), request.getName(), request.getKilowattHours());
-        return Response.status(Response.Status.CREATED).entity(created).build();
+        return Response.status(Response.Status.CREATED)
+                .entity(created)
+                .build();
     }
 
     @DELETE

@@ -299,6 +299,15 @@
                 Open City Zones
             </a>
         </section>
+
+        <section class="page-card">
+            <h2>Citizen Complaint Escalation</h2>
+            <p>Part C &ndash; Chain of Responsibility. Submit and track citizen complaints through an escalating chain
+                of handlers.</p>
+            <a class="button" href="${pageContext.request.contextPath}/complaints.jsp">
+                Open Citizen Complaints
+            </a>
+        </section>
     </div>
 </main>
 </body>
