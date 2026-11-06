@@ -3,6 +3,7 @@ package com.thisal.smartcity360.service;
 import com.thisal.smartcity360.enums.LampTechnology;
 import com.thisal.smartcity360.exception.InvalidFleetOperationException;
 import com.thisal.smartcity360.pattern.flyweight.street_light_flyweight.StreetLight;
+import com.thisal.smartcity360.pattern.flyweight.street_light_flyweight.StreetLightType;
 import com.thisal.smartcity360.pattern.flyweight.street_light_flyweight.StreetLightTypeFactory;
 import com.thisal.smartcity360.record.*;
 import com.thisal.smartcity360.repo.StreetLightRepo;
@@ -11,12 +12,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -98,9 +97,18 @@ public class StreetLightService {
         return Math.round(nanos / 10_000.0) / 100.0;
     }
 
+    private static int distinctTypes(List<StreetLight> lights) {
+        Set<StreetLightType> distinct = Collections.newSetFromMap(new IdentityHashMap<>());
+        for (StreetLight light : lights) {
+            distinct.add(light.getType());
+        }
+        return distinct.size();
+    }
+
     @PostConstruct
     void init() {
         write(() -> {
+            addLight(StreetLightService.SEED_LIGHTS);
             return null;
         });
     }
@@ -147,6 +155,67 @@ public class StreetLightService {
             addLight(StreetLightService.SEED_LIGHTS);
             return summary(StreetLightService.DEFAULT_SAMPLE);
         });
+    }
+
+    public ScheduleReport applySchedule(LocalTime time) {
+        return write(() -> {
+            int on = 0;
+            int watts = 0;
+            assert repo != null;
+            for (StreetLight light : repo.all()) {
+                light.applySchedule(time);
+                if (light.isOn()) {
+                    on++;
+                }
+                watts += light.powerDrawWatts();
+            }
+            return new ScheduleReport(time.toString(), on, repo.size() - on, kilowatts(watts));
+        });
+    }
+
+    public BenchmarkReport benchmark(int count) {
+        if (count < 1 || count > StreetLightService.MAX_FLEET) {
+            throw new InvalidFleetOperationException("Count must be between 1 and " + StreetLightService.MAX_FLEET + "!");
+        }
+
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        assert factory != null;
+
+        long sharedStart = System.nanoTime();
+        List<StreetLight> shared = build(count, random, factory::getType);
+        long sharedNanos = System.nanoTime() - sharedStart;
+
+        long unsharedStart = System.nanoTime();
+        List<StreetLight> unshared = build(count, random, factory::createUnshared);
+        long unsharedNanos = System.nanoTime() - unsharedStart;
+
+        int sharedTypes = distinctTypes(shared);
+        int unsharedTypes = distinctTypes(unshared);
+        long sharedBytes = count * StreetLightService.ESTIMATED_LIGHT_BYTES + sharedTypes * StreetLightService.ESTIMATED_LIGHT_BYTES;
+        long unsharedBytes = count * StreetLightService.ESTIMATED_LIGHT_BYTES + unsharedTypes * StreetLightService.ESTIMATED_LIGHT_BYTES;
+        double saved = Math.round((1.0 - (double) sharedBytes / unsharedBytes) * 10_000.0) / 100.0;
+
+        return new BenchmarkReport(
+                count,
+                sharedTypes,
+                unsharedTypes,
+                sharedBytes,
+                unsharedBytes,
+                saved,
+                millis(sharedNanos),
+                millis(unsharedNanos),
+                "Object count are Exact! Byte figures are Estimates. " + StreetLightService.ESTIMATED_LIGHT_BYTES + "B per Light " +
+                        "and " + StreetLightService.ESTIMATED_TYPE_BYTES + "B per Type Object. Timings are vary between Runs."
+        );
+    }
+
+    private List<StreetLight> build(int count, ThreadLocalRandom random, Function<StreetLightSpec, StreetLightType> typeSource) {
+        List<StreetLight> lights = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
+            StreetLightSpec spec = StreetLightService.CATALOG.get(random.nextInt(StreetLightService.CATALOG.size()));
+            lights.add(new StreetLight(i, typeSource.apply(spec), randomLocation(random)));
+        }
+        return lights;
     }
 
     private void addLight(int count) {
