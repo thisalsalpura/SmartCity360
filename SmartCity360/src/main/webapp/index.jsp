@@ -308,6 +308,15 @@
                 Open Citizen Complaints
             </a>
         </section>
+
+        <section class="page-card">
+            <h2>Smart Street Lights</h2>
+            <p>Part D &ndash; Flyweight pattern. Manage light fleets and run memory benchmarking with shared light
+                types.</p>
+            <a class="button" href="${pageContext.request.contextPath}/street-lights.jsp">
+                Open Street Lights
+            </a>
+        </section>
     </div>
 </main>
 </body>
