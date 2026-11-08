@@ -31,7 +31,7 @@ public class ComparisonExpression implements PolicyExpression {
     @Override
     public String describe() {
         String number = limit == Math.rint(limit)
-                ? String.valueOf((double) limit)
+                ? String.valueOf((long) limit)
                 : String.valueOf(limit);
         return variable.name() + " " + operator.getSymbol() + " " + number;
     }
