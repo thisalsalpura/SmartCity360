@@ -18,7 +18,7 @@ public class SupervisorHandler extends ComplaintHandler {
 
     @Override
     protected String resolutionNote(Complaint complaint) {
-        return "Reviewed by the Supervisor and a Field Team was Assigned.";
+        return "Reviewed by the Supervisor and a Field Team was Assigned!";
     }
 
 }

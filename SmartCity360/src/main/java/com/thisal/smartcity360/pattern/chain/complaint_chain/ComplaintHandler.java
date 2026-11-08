@@ -42,7 +42,7 @@ public abstract class ComplaintHandler {
             trail.add(new HandlingStep(
                     name,
                     HandlingAction.ESCALATED,
-                    complaint.severity().getDisplayName() + " is above this Authority up to " + maxSeverity().getDisplayName() + ". Passed to " + next.level().getDisplayName() + "."
+                    complaint.severity().getDisplayName() + " is above this Authority up to " + maxSeverity().getDisplayName() + "! Passed to " + next.level().getDisplayName() + "."
             ));
             return next.handle(complaint, trail);
         }

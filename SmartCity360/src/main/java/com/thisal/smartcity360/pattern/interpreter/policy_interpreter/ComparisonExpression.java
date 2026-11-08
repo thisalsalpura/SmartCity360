@@ -25,12 +25,15 @@ public class ComparisonExpression implements PolicyExpression {
 
     @Override
     public boolean interpret(PolicyContext context) {
-        return false;
+        return operator.test(context.valueOf(variable), limit);
     }
 
     @Override
     public String describe() {
-        return "";
+        String number = limit == Math.rint(limit)
+                ? String.valueOf((double) limit)
+                : String.valueOf(limit);
+        return variable.name() + " " + operator.getSymbol() + " " + number;
     }
 
 }
