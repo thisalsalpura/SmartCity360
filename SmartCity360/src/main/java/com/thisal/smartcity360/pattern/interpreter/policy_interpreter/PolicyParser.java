@@ -1,9 +1,12 @@
 package com.thisal.smartcity360.pattern.interpreter.policy_interpreter;
 
+import com.thisal.smartcity360.enums.ComparisonOperator;
+import com.thisal.smartcity360.enums.PolicyVariable;
 import com.thisal.smartcity360.enums.TokenType;
 import com.thisal.smartcity360.exception.PolicyParseException;
 import com.thisal.smartcity360.record.Token;
 
+import java.time.LocalTime;
 import java.util.List;
 
 public final class PolicyParser {
@@ -65,13 +68,65 @@ public final class PolicyParser {
             try {
                 return new NotExpression(parseNot());
             } finally {
-                --depth;
+                depth--;
             }
         }
+        return parsePrimary();
     }
 
     private PolicyExpression parsePrimary() {
+        Token token = peek();
+        if (token.type() == TokenType.LEFT_PAREN) {
+            index++;
+            enter();
+            try {
+                PolicyExpression inner = parseOr();
+                expect(TokenType.RIGHT_PAREN, "')'");
+                return inner;
+            } finally {
+                depth--;
+            }
+        }
+        if (token.type() == TokenType.IDENTIFIER) {
+            return "TIME".equals(token.text())
+                    ? parseTimeRange()
+                    : parseComparison();
+        }
+        throw new PolicyParseException("Expected a Condition! But found " + describe(token) + ".", token.position());
+    }
 
+    private PolicyExpression parseTimeRange() {
+        Token time = tokens.get(index++);
+        Token between = peek();
+        if (between.type() != TokenType.IDENTIFIER || !"BETWEEN".equals(between.text())) {
+            throw new PolicyParseException("Time can only be used as 'TIME BETWEEN HH:mm HH:mm'!", between.position());
+        }
+        index++;
+        Token start = expect(TokenType.TIME_LITERAL, "A Start Time such as 22:00!");
+        Token end = expect(TokenType.TIME_LITERAL, "A End Time such as 06:00!");
+        if (start.text().equals(end.text())) {
+            throw new PolicyParseException("Start and End Time must be Different!", time.position());
+        }
+        return new TimeRangeExpression(LocalTime.parse(start.text()), LocalTime.parse(end.text()));
+    }
+
+    private PolicyExpression parseComparison() {
+        Token name = tokens.get(index++);
+        PolicyVariable variable = variableFor(name);
+        Token operatorToken = expect(TokenType.OPERATOR, "A Comparison Operator [<, <=, >, >=, ==, !=]");
+        ComparisonOperator operator = ComparisonOperator.fromSymbol(operatorToken.text())
+                .orElseThrow(() -> new PolicyParseException("Unexpected Operator '" + operatorToken.text() + "'!", operatorToken.position()));
+        Token number = expect(TokenType.NUMBER, "A Number");
+        return new ComparisonExpression(variable, operator, Double.parseDouble(number.text()));
+    }
+
+    private PolicyVariable variableFor(Token name) {
+        for (PolicyVariable variable : PolicyVariable.values()) {
+            if (variable.name().equals(name.text())) {
+                return variable;
+            }
+        }
+        throw new PolicyParseException("Unknown Variable " + name.text() + "!", name.position());
     }
 
     private boolean matchKeyword(String keyword) {
