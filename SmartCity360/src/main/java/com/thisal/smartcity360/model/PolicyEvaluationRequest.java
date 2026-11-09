@@ -1,0 +1,20 @@
+package com.thisal.smartcity360.model;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import lombok.Data;
+
+@Data
+public class PolicyEvaluationRequest {
+
+    private Double noise;
+
+    private Double parkingHours;
+
+    private Double speed;
+
+    @NotBlank(message = "Time is Required!")
+    @Pattern(regexp = "([01]\\d|2[0-3]):[0-5]\\d", message = "Time must be in HH:mm Format!")
+    private String time;
+
+}

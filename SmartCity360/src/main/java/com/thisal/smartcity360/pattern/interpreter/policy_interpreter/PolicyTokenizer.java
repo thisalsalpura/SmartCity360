@@ -65,7 +65,7 @@ public final class PolicyTokenizer {
                 i++;
             }
             String text = source.substring(start, i);
-            if (text.matches("\\d{2}:\\d{2}")) {
+            if (!text.matches("\\d{2}:\\d{2}")) {
                 throw new PolicyParseException("Time must be written as HH:mm! For example 22:00.", start);
             }
             try {

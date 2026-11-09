@@ -272,6 +272,7 @@
         .page-card a.button {
             text-decoration: none;
         }
+
     </style>
 </head>
 <body>
@@ -315,6 +316,15 @@
                 types.</p>
             <a class="button" href="${pageContext.request.contextPath}/street-lights.jsp">
                 Open Street Lights
+            </a>
+        </section>
+
+        <section class="page-card">
+            <h2>City Policies</h2>
+            <p>Part E &ndash; Interpreter pattern. Write, parse, update, and evaluate city rules against different
+                situations.</p>
+            <a class="button" href="${pageContext.request.contextPath}/policies.jsp">
+                Open City Policies
             </a>
         </section>
     </div>
