@@ -18,7 +18,7 @@ public class LocalStaffHandler extends ComplaintHandler {
 
     @Override
     protected String resolutionNote(Complaint complaint) {
-        return "Logged and Resolved at the Local Service Desk.";
+        return "Logged and Resolved at the Local Service Desk!";
     }
 
 }

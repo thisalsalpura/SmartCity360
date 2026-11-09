@@ -1,6 +1,5 @@
 package com.thisal.smartcity360.enums;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

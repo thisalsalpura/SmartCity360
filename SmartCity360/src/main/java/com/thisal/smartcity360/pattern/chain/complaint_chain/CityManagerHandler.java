@@ -18,7 +18,7 @@ public class CityManagerHandler extends ComplaintHandler {
 
     @Override
     protected String resolutionNote(Complaint complaint) {
-        return "City Manager approved an Emergency Response.";
+        return "City Manager approved an Emergency Response!";
     }
 
 }
