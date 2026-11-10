@@ -327,6 +327,15 @@
                 Open City Policies
             </a>
         </section>
+
+        <section class="page-card">
+            <h2>City Control Center</h2>
+            <p>Compound design &ndash; Mediator pattern. Coordinate events between independent modules through a central
+                hub.</p>
+            <a class="button" href="${pageContext.request.contextPath}/control-center.jsp">
+                Open Control Center
+            </a>
+        </section>
     </div>
 </main>
 </body>
