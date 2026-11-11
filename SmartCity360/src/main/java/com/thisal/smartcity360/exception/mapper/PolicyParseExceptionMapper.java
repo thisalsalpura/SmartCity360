@@ -5,7 +5,9 @@ import com.thisal.smartcity360.record.ErrorResponse;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
 
+@Provider
 public class PolicyParseExceptionMapper implements ExceptionMapper<PolicyParseException> {
 
     @Override

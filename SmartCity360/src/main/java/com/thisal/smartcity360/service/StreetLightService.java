@@ -191,8 +191,8 @@ public class StreetLightService {
 
         int sharedTypes = distinctTypes(shared);
         int unsharedTypes = distinctTypes(unshared);
-        long sharedBytes = count * StreetLightService.ESTIMATED_LIGHT_BYTES + sharedTypes * StreetLightService.ESTIMATED_LIGHT_BYTES;
-        long unsharedBytes = count * StreetLightService.ESTIMATED_LIGHT_BYTES + unsharedTypes * StreetLightService.ESTIMATED_LIGHT_BYTES;
+        long sharedBytes = count * StreetLightService.ESTIMATED_LIGHT_BYTES + sharedTypes * StreetLightService.ESTIMATED_TYPE_BYTES;
+        long unsharedBytes = count * StreetLightService.ESTIMATED_LIGHT_BYTES + unsharedTypes * StreetLightService.ESTIMATED_TYPE_BYTES;
         double saved = Math.round((1.0 - (double) sharedBytes / unsharedBytes) * 10_000.0) / 100.0;
 
         return new BenchmarkReport(

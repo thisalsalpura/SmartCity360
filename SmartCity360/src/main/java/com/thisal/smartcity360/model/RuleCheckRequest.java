@@ -8,7 +8,7 @@ import lombok.Data;
 public class RuleCheckRequest {
 
     @NotBlank(message = "Rule is Required!")
-    @Size(max = 200, message = "Rule must be at most 500 Characters!")
+    @Size(max = 500, message = "Rule must be at most 500 Characters!")
     private String rule;
 
 }

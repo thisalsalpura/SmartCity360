@@ -68,7 +68,7 @@ public class PolicyService {
             );
             seed(
                     "School Zone Speed",
-                    "Speed must not exceed 30 km/h while school is in session (06:30 to 14:30).",
+                    "Speed must not exceed 30 km/h while school is in session (07:00 to 15:00).",
                     "SPEED <= 30 OR NOT TIME BETWEEN 07:00 15:00"
             );
             return null;
